@@ -1,7 +1,7 @@
 resource "aws_instance" "web" {
-  ami           = "ami-003bce5ba6a96a706"
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public.id
+  ami                         = "ami-003bce5ba6a96a706"
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.public.id
   user_data_replace_on_change = true
 
   user_data = <<-EOF
@@ -28,7 +28,7 @@ resource "aws_instance" "web" {
     volume_type           = "gp3"
   }
 
-  
+
 
   vpc_security_group_ids = [aws_security_group.web.id]
 
@@ -41,14 +41,14 @@ resource "aws_instance" "web" {
 # It does not create a new hosted zone or register a new domain.
 # The hosted zone must already exist in this AWS account. 
 data "aws_route53_zone" "main" {
-  name         = "kevinduongdev.click"
+  name         = trimsuffix(var.route53_zone_name, ".")
   private_zone = false
 }
 
 #create DNS record
 resource "aws_route53_record" "web" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "test"
+  name    = var.route53_record_prefix == "" ? trimsuffix(var.route53_zone_name, ".") : "${trimsuffix(var.route53_record_prefix, ".")}.${trimsuffix(var.route53_zone_name, ".")}"
   type    = "A"
   ttl     = 300
   records = [aws_eip.web.public_ip]

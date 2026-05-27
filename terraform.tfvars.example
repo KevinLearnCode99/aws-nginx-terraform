@@ -1,0 +1,2 @@
+route53_zone_name     = "example.com"
+route53_record_prefix = "test"

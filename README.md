@@ -50,7 +50,30 @@ Common tags are applied to supported resources:
 - `Environment = demo`
 - `ManagedBy = Terraform`
 
+## Variables
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `route53_zone_name` | Existing public Route 53 hosted zone name | Required |
+| `route53_record_prefix` | DNS record prefix inside the hosted zone | `test` |
+
 ## Usage
+
+Create your local variable file:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+
+Then edit `terraform.tfvars` with your own Route 53 hosted zone and DNS record prefix:
+
+```hcl
+route53_zone_name     = "example.com"
+route53_record_prefix = "test"
+```
+
+With the example above, Terraform creates an A record for `test.example.com`.
+Use `route53_record_prefix = ""` if you want the record at the zone apex, such as `example.com`.
 
 Initialize Terraform:
 
